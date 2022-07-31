@@ -1,13 +1,18 @@
 import 'dart:math';
 
+import 'package:boat_autopilot/providers/navigation_provider.dart';
 import 'package:boat_autopilot/views/home.dart';
+import 'package:boat_autopilot/views/map.dart';
 import 'package:boat_autopilot/views/motor_panel.dart';
 import 'package:boat_autopilot/views/page_navigation.dart';
+import 'package:boat_autopilot/views/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:provider/provider.dart';
 import 'mqtt/mqtt_service.dart';
+import 'views/status_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,13 +22,19 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Autopilot',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NavigationProvider>(create: (BuildContext context) => NavigationProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Autopilot',
+        theme: ThemeData(
+          fontFamily: 'Inter',
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -42,47 +53,52 @@ class _MyHomePageState extends State<MyHomePage>
     return SafeArea(
         child: Scaffold(
       body: Container(
-        child: Center(
-            child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(children: [
-                Expanded(child: HomeView()),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: 70.0,
-                  ),
-                  child: PageNavigationView(),
-                )
-              ]),
-            ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(
-                minWidth: 200.0,
+          child: Column(
+            children: [
+              const StatusBar(),
+              SizedBox(
+                height: MediaQuery.of(context).size.height-50,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Consumer<NavigationProvider>(
+                        builder: (context, navigationProvider, child) {
+                          return PageView(
+                          controller: navigationProvider.getPageController,
+                          scrollDirection: Axis.vertical,
+                          onPageChanged: navigationProvider.onViewChanged,
+                          children: [
+                            HomeView(),
+                            MapView(),
+                            SettingsView()
+                          ],
+                        );
+                        },
+                      ),
+                    ),
+                    PageNavigationView(),
+                    MotorPanelView(),
+                  ],
+                ),
               ),
-              child: MotorPanelView(),
+            ],
+          ),
+          decoration: const BoxDecoration(
+            // Box decoration takes a gradient
+            gradient: LinearGradient(
+              // Where the linear gradient begins and ends
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              // Add one stop for each color. Stops should increase from 0 to 1
+              colors: [
+                // Colors are easy thanks to Flutter's Colors class.
+                Color.fromARGB(255, 28, 21, 45),
+                Color.fromARGB(255, 17, 17, 36)
+              ],
             ),
-          ],
-        )),
-        decoration: const BoxDecoration(
-        // Box decoration takes a gradient
-        gradient: LinearGradient(
-          // Where the linear gradient begins and ends
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          // Add one stop for each color. Stops should increase from 0 to 1
-          stops: [0.1, 0.5],
-          colors: [
-            // Colors are easy thanks to Flutter's Colors class.
-            Color.fromARGB(255, 48, 48, 48),
-            Color.fromARGB(255, 29, 29, 29)
-          ],
-        ),
-      )
-      ),
+          )),
       backgroundColor: Colors.black,
-    )
-    );
+    ));
   }
 }
