@@ -60,7 +60,7 @@ class MqttService {
   }
 
   Stream<dynamic>? subscribe(String topic) {
-    if (!isPolaczenie) return null;
+    if (!isConnected) return null;
 
     if (isTopicSubscribed(topic)) {
       return _topicStreams[topic]!.stream;
@@ -75,21 +75,21 @@ class MqttService {
   }
 
   void disconnect() {
-    if (!isPolaczenie) return;
+    if (!isConnected) return;
     print('Disconnected');
     _stateStream.add(_client.connectionStatus!.state);
     _client.disconnect();
   }
 
   void publish(String topic, String message) {
-    if (!isPolaczenie) return;
+    if (!isConnected) return;
     if(!isTopicSubscribed(topic)) return;
     final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
     builder.addString(message);
     _client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
   }
 
-  get isPolaczenie {
+  get isConnected {
     return _client.connectionStatus!.state == MqttConnectionState.connected;
   }
 
