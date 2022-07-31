@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../views/home.dart';
-
 class NavigationProvider extends ChangeNotifier {
 
   int _currentViewIndex = 0;
@@ -14,7 +12,8 @@ class NavigationProvider extends ChangeNotifier {
 
   void setView(int newViewIndex) {
     onViewChanged(newViewIndex);
-    _controller.animateToPage(_currentViewIndex, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+    _controller.jumpToPage(_currentViewIndex);
+
   }
 
   void onViewChanged(int newViewIndex) {
