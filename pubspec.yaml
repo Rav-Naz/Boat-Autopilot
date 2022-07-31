@@ -39,6 +39,9 @@ dependencies:
   flutter_svg: ^1.0.3
   animated_rotation: ^2.0.0
   animated_flip_counter: ^0.2.4
+  provider: ^6.0.3
+  auto_size_text: ^3.0.0
+  intl: ^0.17.0
   
 dev_dependencies:
   flutter_test:
@@ -78,6 +81,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
