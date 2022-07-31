@@ -1,11 +1,10 @@
-import 'dart:math';
-
 import 'package:boat_autopilot/providers/map_provider.dart';
 import 'package:boat_autopilot/shared/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+
 
 class MapView extends StatefulWidget {
   @override
@@ -221,5 +220,6 @@ class BoatMarker extends StatelessWidget {
                 fit: BoxFit.cover)),
       ),
     );
+
   }
 }

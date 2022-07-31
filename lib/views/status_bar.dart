@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+
 class StatusBar extends StatefulWidget {
   const StatusBar({
     Key? key,

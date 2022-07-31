@@ -144,6 +144,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
+
   intl:
     dependency: "direct main"
     description:
@@ -298,6 +299,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+
   sky_engine:
     dependency: transitive
     description: flutter

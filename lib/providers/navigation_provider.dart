@@ -13,6 +13,7 @@ class NavigationProvider extends ChangeNotifier {
   void setView(int newViewIndex) {
     onViewChanged(newViewIndex);
     _controller.jumpToPage(_currentViewIndex);
+
   }
 
   void onViewChanged(int newViewIndex) {
