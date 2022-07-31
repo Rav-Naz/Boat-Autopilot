@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:boat_autopilot/providers/map_provider.dart';
 import 'package:boat_autopilot/providers/navigation_provider.dart';
 import 'package:boat_autopilot/views/home.dart';
 import 'package:boat_autopilot/views/map.dart';
@@ -26,7 +25,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NavigationProvider>(create: (BuildContext context) => NavigationProvider()),
-        ChangeNotifierProvider<MapProvider>(create: (BuildContext context) => MapProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -68,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage>
                         builder: (context, navigationProvider, child) {
                           return PageView(
                           controller: navigationProvider.getPageController,
-                          // scrollDirection: Axis.vertical,
+                          scrollDirection: Axis.vertical,
                           onPageChanged: navigationProvider.onViewChanged,
                           children: [
                             HomeView(),
