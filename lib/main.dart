@@ -1,18 +1,13 @@
-import 'dart:math';
-
 import 'package:boat_autopilot/providers/map_provider.dart';
 import 'package:boat_autopilot/providers/navigation_provider.dart';
+import 'package:boat_autopilot/providers/settings_provider.dart';
 import 'package:boat_autopilot/views/home.dart';
 import 'package:boat_autopilot/views/map.dart';
 import 'package:boat_autopilot/views/motor_panel.dart';
 import 'package:boat_autopilot/views/page_navigation.dart';
 import 'package:boat_autopilot/views/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:mqtt_client/mqtt_client.dart';
 import 'package:provider/provider.dart';
-import 'mqtt/mqtt_service.dart';
 import 'views/status_bar.dart';
 
 void main() {
@@ -27,6 +22,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<NavigationProvider>(create: (BuildContext context) => NavigationProvider()),
         ChangeNotifierProvider<MapProvider>(create: (BuildContext context) => MapProvider()),
+        ChangeNotifierProvider<SettingsProvider>(create: (BuildContext context) => SettingsProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
