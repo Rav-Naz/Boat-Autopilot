@@ -8,6 +8,9 @@ import 'package:mqtt_client/mqtt_client.dart';
 import '../mqtt/mqtt_service.dart';
 import '../shared/colors.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 class HomeView extends StatefulWidget {
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -169,14 +172,14 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text((_currentBoatAngle / (2 * pi) * 360).abs().toStringAsFixed(1), style: TextStyle(color: Colors.white, fontSize: 50*mediaWidth*0.001, fontWeight: FontWeight.bold)),
-                Text("Kurs aktualny", style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),)
+                Text(AppLocalizations.of(context)!.actual_course, style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),)
               ],
             )
             ),
             Positioned(top: 30, left: 30,child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Kurs zadany", style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),),
+                Text(AppLocalizations.of(context)!.setted_course, style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),),
                 Text((_settedBoatAngle / (2 * pi) * 360).toStringAsFixed(1), style: TextStyle(color: Colors.white, fontSize: 50*mediaWidth*0.001, fontWeight: FontWeight.bold)),
                 Row(
                   children: [
@@ -202,14 +205,14 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(_currentBoatSpeed.toStringAsFixed(1), style: TextStyle(color: Colors.white, fontSize: 50*mediaWidth*0.001, fontWeight: FontWeight.bold)),
-                Text("Prędkość aktualna", style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),)
+                Text(AppLocalizations.of(context)!.actual_speed, style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),)
               ],
             )
             ),
             Positioned(top: 30, right: 30,child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text("Prędkość zadana", style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),),
+                Text(AppLocalizations.of(context)!.setted_speed, style: TextStyle(color: primary, fontSize: 24*mediaWidth*0.001),),
                 Text(_settedBoatSpeed.toStringAsFixed(1), style: TextStyle(color: Colors.white, fontSize: 50*mediaWidth*0.001, fontWeight: FontWeight.bold)),
                 Row(
                   children: [
@@ -235,41 +238,3 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
         ));
   }
 }
-
- // Expanded(
-            //     flex: 2,
-            //     child: Container(
-            //       height: double.infinity,
-            //       child: Column(
-            //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //         crossAxisAlignment: CrossAxisAlignment.center,
-            //         children: [
-            //           Column(
-            //             children: [
-            //               AnimatedFlipCounter(
-            //                   value: (_settedBoatAngle / (2 * pi) * 360),
-            //                   duration: const Duration(milliseconds: 250),
-            //                   fractionDigits: 1,
-            //                   textStyle: const TextStyle(
-            //                       color: Colors.white, fontSize: 100)),
-            //               const Text("Kurs zadany",
-            //                   style:
-            //                       TextStyle(color: Colors.grey, fontSize: 30))
-            //             ],
-            //           ),
-            //           Column(
-            //             children: [
-            //               AnimatedFlipCounter(
-            //                   value: (_currentBoatAngle / (2 * pi) * 360).abs(),
-            //                   duration: const Duration(milliseconds: 250),
-            //                   fractionDigits: 1,
-            //                   textStyle: const TextStyle(
-            //                       color: Colors.white, fontSize: 100)),
-            //               const Text("Kurs aktualny",
-            //                   style:
-            //                       TextStyle(color: Colors.grey, fontSize: 30))
-            //             ],
-            //           )
-            //         ],
-            //       ),
-            //     ))

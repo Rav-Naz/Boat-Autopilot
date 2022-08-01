@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:boat_autopilot/l10n/l10n.dart';
 import 'package:boat_autopilot/providers/map_provider.dart';
 import 'package:boat_autopilot/providers/navigation_provider.dart';
 import 'package:boat_autopilot/providers/settings_provider.dart';
@@ -7,15 +10,28 @@ import 'package:boat_autopilot/views/motor_panel.dart';
 import 'package:boat_autopilot/views/page_navigation.dart';
 import 'package:boat_autopilot/views/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'views/status_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+
+}
+
+class _MyAppState extends State<MyApp> {
+
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -24,14 +40,26 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<MapProvider>(create: (BuildContext context) => MapProvider()),
         ChangeNotifierProvider<SettingsProvider>(create: (BuildContext context) => SettingsProvider()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Autopilot',
-        theme: ThemeData(
-          fontFamily: 'Inter',
-          primarySwatch: Colors.blue,
-        ),
-        home: const MyHomePage(),
+      child: Consumer<SettingsProvider>(
+        builder: (context, value, child) {
+          return MaterialApp(
+          locale: Locale(value.getLanguage),
+          supportedLocales: L10n.all,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          debugShowCheckedModeBanner: false,
+          title: 'Autopilot',
+          theme: ThemeData(
+            fontFamily: 'Inter',
+            primarySwatch: Colors.blue,
+          ),
+          home: const MyHomePage(),
+        );
+        },
       ),
     );
   }

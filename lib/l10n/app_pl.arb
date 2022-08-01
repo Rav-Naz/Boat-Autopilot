@@ -1,0 +1,16 @@
+{
+    "language": "Polski",
+
+    "setted_course": "Kurs zadany",
+    "actual_course": "Kurs aktualny",
+    "setted_speed": "Prędkość zadana",
+    "actual_speed": "Prędkość aktualna",
+
+    "waypoint_info": "Aby dodać punkt nawigacyjny, przytrzymaj w wybranym miejscu na mapie",
+
+    "setting1": "Ustawienie 1",
+    "setting2": "Ustawienie 2",
+    "interface_language": "Język interfejsu",
+
+    "close": "Zamknij"
+}

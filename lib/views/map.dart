@@ -7,6 +7,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class MapView extends StatefulWidget {
   @override
@@ -88,10 +90,10 @@ class _MapViewState extends State<MapView> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           color: primaryDark),
-                      child: const Text(
-                        "Aby dodać punkt nawigacyjny, przytrzymaj w wybranym miejscu na mapie",
+                      child: Text(
+                        AppLocalizations.of(context)!.waypoint_info,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                         ),

@@ -1,8 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:boat_autopilot/main.dart';
 import 'package:boat_autopilot/providers/settings_provider.dart';
 import 'package:boat_autopilot/shared/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class SettingsView extends StatefulWidget {
   @override
@@ -10,36 +14,37 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  var childs = [
+
+  List<Widget> buildSettings(context) {
+    return [
     BipolarSwitchWidget(
-      settingName: "Ustawienie 1 ",
+      settingName: AppLocalizations.of(context)!.setting1,
       settingKey: 'setting1',
     ),
     PlusMinusWidget(
+      settingName: AppLocalizations.of(context)!.setting2,
       settingKey: "setting2",
-      settingName: "Ustawienie 2",
-    ),
-    PlusMinusWidget(
-      settingKey: "setting2",
-      settingName: "Ustawienie 2",
-    ),
-    BipolarSwitchWidget(
-      settingName: "Ustawienie 1 ",
-      settingKey: 'setting1',
     ),
     ChooserWidget(
       options: const ["Polski", "English"],
-      settingKey: "setting3",
-      settingName: "Język interfejsu",
-      callback: (value) {
-        print(value);
+      settingKey: "language",
+      settingName: AppLocalizations.of(context)!.interface_language,
+      callback: (context, value) {
+        if (value == "Polski") {
+          Provider.of<SettingsProvider>(context, listen: false).setLanguage("pl");
+        }
+        else if (value == "English") {
+          Provider.of<SettingsProvider>(context, listen: false).setLanguage("en");
+        }
       },
     ),
   ];
+  }
 
   @override
   Widget build(BuildContext context) {
     var isOneColumn = MediaQuery.of(context).size.width < 1100;
+    var settingsChilds = buildSettings(context);
     return Container(
         color: primaryDark,
         child: GridView.builder(
@@ -49,16 +54,16 @@ class _SettingsViewState extends State<SettingsView> {
               crossAxisSpacing: 35,
             ),
             shrinkWrap: true,
-            itemCount: childs.length,
+            itemCount: settingsChilds.length,
             itemBuilder: (context, index) => index % 2 == 0 && !isOneColumn
                 ? Container(
-                    child: childs[index],
+                    child: settingsChilds[index],
                     decoration: const BoxDecoration(
                         border: Border(
                             right:
                                 BorderSide(width: 2, color: primaryDarkest))),
                   )
-                : childs[index]));
+                : settingsChilds[index]));
   }
 }
 
@@ -264,9 +269,9 @@ class ChooserWidget extends StatelessWidget {
                             MaterialStateProperty.all(Colors.transparent)
                         // foregroundColor: Colors.transparent
                         ),
-                    child: const Text(
-                      "Zamknij",
-                      style: TextStyle(color: accent, fontSize: 15),
+                    child: Text(
+                      AppLocalizations.of(context)!.close,
+                      style: const TextStyle(color: accent, fontSize: 15),
                     ),
                     onPressed: () => {Navigator.of(context).pop()},
                   )
@@ -291,7 +296,7 @@ class ChooserWidget extends StatelessWidget {
                                     listen: false)
                                 .setSetting(settingKey, e);
                             if (callback != null) {
-                              callback!(e);
+                              callback!(context, e);
                             }
                             Navigator.of(context).pop();
                           }))
