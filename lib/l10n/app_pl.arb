@@ -12,5 +12,11 @@
     "setting2": "Ustawienie 2",
     "interface_language": "Język interfejsu",
 
-    "close": "Zamknij"
+    "close": "Zamknij",
+
+    "lat": "DŁUG.: ",
+    "long": "SZER.: ",
+
+    "message1": "Uwaga! Wiadomość Wiadomość Wiadomość",
+    "message2": "Błąd! Wiadomość Wiadomość Wiadomość"
 }

@@ -12,6 +12,12 @@
     "setting2": "Setting 2",
     "interface_language": "Interface language",
 
-    "close": "Close"
+    "close": "Close",
+
+    "lat": "LAT.: ",
+    "long": "LONG.: ",
+
+    "message1": "Warning! Message Message Message",
+    "message2": "Error! Message Message Message"
 
 }

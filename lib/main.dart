@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:boat_autopilot/l10n/l10n.dart';
 import 'package:boat_autopilot/providers/map_provider.dart';
+import 'package:boat_autopilot/providers/messages_provider.dart';
 import 'package:boat_autopilot/providers/navigation_provider.dart';
 import 'package:boat_autopilot/providers/settings_provider.dart';
 import 'package:boat_autopilot/views/home.dart';
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<NavigationProvider>(create: (BuildContext context) => NavigationProvider()),
         ChangeNotifierProvider<MapProvider>(create: (BuildContext context) => MapProvider()),
         ChangeNotifierProvider<SettingsProvider>(create: (BuildContext context) => SettingsProvider()),
+        ChangeNotifierProvider<MessagesProvider>(create: (BuildContext context) => MessagesProvider()),
       ],
       child: Consumer<SettingsProvider>(
         builder: (context, value, child) {
