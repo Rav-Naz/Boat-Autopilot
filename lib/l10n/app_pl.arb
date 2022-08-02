@@ -18,5 +18,12 @@
     "long": "SZER.: ",
 
     "message1": "Uwaga! Wiadomość Wiadomość Wiadomość",
-    "message2": "Błąd! Wiadomość Wiadomość Wiadomość"
+    "message2": "Błąd! Wiadomość Wiadomość Wiadomość",
+
+    "turning_speed": "Szybkość skrętu",
+    "steerage": "Sterowanie",
+
+    "engine_load":"Obciążenie",
+    "engine_load_l":"Lewy silnik",
+    "engine_load_r":"Prawy silnik"
 }

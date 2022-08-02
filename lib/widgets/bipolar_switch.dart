@@ -5,47 +5,65 @@ import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import '../shared/colors.dart';
 
-class BipolarSwitchWidget extends StatelessWidget {
+class BipolarSwitchWidget extends StatefulWidget {
   String name1;
   String name2;
   String settingKey;
   String? settingName;
+  Function? callback;
+  bool? initialValue;
+  bool enabled;
 
   BipolarSwitchWidget({
     this.name1 = "OFF",
     this.name2 = "ON",
     required this.settingKey,
     this.settingName,
+    this.callback,
+    this.initialValue,
+    this.enabled = true,
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<BipolarSwitchWidget> createState() => _BipolarSwitchWidgetState();
+}
+
+class _BipolarSwitchWidgetState extends State<BipolarSwitchWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
       child: Consumer<SettingsProvider>(
         builder: (context, settingsProvider, child) {
-          var value = settingsProvider.getSetting(settingKey) == 'true';
+          var value =  widget.initialValue ?? settingsProvider.getSetting(widget.settingKey) == 'true';
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Visibility(
-                  visible: settingName != null,
+                  visible: widget.settingName != null,
                   child: Expanded(
-                      child: AutoSizeText(settingName ?? "",
+                      child: AutoSizeText(widget.settingName ?? "",
                           maxLines: 2,
                           style: const TextStyle(
                               color: Colors.white, fontSize: 15)))),
               GestureDetector(
-                onTap: () {
-                  settingsProvider.setSetting(settingKey, (!value).toString());
-                },
+                onTap: widget.enabled ? () {
+                  if (widget.callback != null) {
+                    setState(() {
+                      widget.initialValue = !widget.initialValue!;
+                    });
+                    widget.callback!(widget.initialValue, widget.settingKey);
+                  } else {
+                    settingsProvider.setSetting(widget.settingKey, (!value).toString());
+                  }
+                } : null,
                 child: Row(
                   children: [
                     SizedBox(
                         width: 60,
                         child: AutoSizeText(
-                          name1,
+                          widget.name1,
                           maxLines: 1,
                           style: TextStyle(
                               color: (value) ? primary : accent,
@@ -83,7 +101,7 @@ class BipolarSwitchWidget extends StatelessWidget {
                     SizedBox(
                         width: 60,
                         child: AutoSizeText(
-                          name2,
+                          widget.name2,
                           maxLines: 1,
                           style: TextStyle(
                               color: !(value) ? primary : accent,

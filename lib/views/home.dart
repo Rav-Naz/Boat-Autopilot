@@ -40,7 +40,7 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
           });
           }
         });
-        mqtt.subscribe("home/garden/fountain1")!.listen((event) {
+        mqtt.subscribe("boat/actual_speed")!.listen((event) {
           if(mounted) {
           setState(() {
             _currentBoatSpeed = double.parse(event);

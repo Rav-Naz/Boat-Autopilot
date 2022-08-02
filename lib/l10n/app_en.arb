@@ -18,6 +18,13 @@
     "long": "LONG.: ",
 
     "message1": "Warning! Message Message Message",
-    "message2": "Error! Message Message Message"
+    "message2": "Error! Message Message Message",
+
+    "turning_speed": "Turning speed",
+    "steerage": "Steerage",
+
+    "engine_load":"Engine load",
+    "engine_load_l":"Left motor",
+    "engine_load_r":"Right motor"
 
 }
