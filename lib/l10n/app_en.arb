@@ -1,0 +1,23 @@
+{
+    "language": "English",
+
+    "setted_course": "Setted course",
+    "actual_course": "Actual course",
+    "setted_speed": "Setted speed",
+    "actual_speed": "Actual speed",
+
+    "waypoint_info": "To add a waypoint, hold on the desired location on the map",
+
+    "setting1": "Setting 1",
+    "setting2": "Setting 2",
+    "interface_language": "Interface language",
+
+    "close": "Close",
+
+    "lat": "LAT.: ",
+    "long": "LONG.: ",
+
+    "message1": "Warning! Message Message Message",
+    "message2": "Error! Message Message Message"
+
+}

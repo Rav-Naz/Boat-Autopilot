@@ -1,10 +1,14 @@
 import 'dart:async';
 
 import 'package:boat_autopilot/providers/map_provider.dart';
+import 'package:boat_autopilot/providers/messages_provider.dart';
 import 'package:boat_autopilot/shared/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class StatusBar extends StatefulWidget {
@@ -29,6 +33,33 @@ class _StatusBarState extends State<StatusBar> {
     super.initState();
   }
 
+  Widget messageBuilder(context) {
+    return Consumer<MessagesProvider>(
+      builder: (context, messageProvider, child) {
+        var message = messageProvider.getLastMessage;
+        Color color = Colors.white;
+        String text = "";
+        if(message != null) {
+          switch (message.type) {
+            case "ERR": color = Colors.red; break;
+            case "WAR": color = Colors.amber; break;
+            case "INF": color = Colors.white; break;
+            default: color = Colors.white;
+          }
+          switch (message.code) {
+            case "1": text = AppLocalizations.of(context)!.message1; break;
+            case "2": text = AppLocalizations.of(context)!.message2; break;
+            default: text = "";
+          }
+        }
+        return Text(
+                text,
+                style: TextStyle(color: color, fontSize: 15),
+              );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // return Container();
@@ -48,11 +79,11 @@ class _StatusBarState extends State<StatusBar> {
                 children: [
                   Row(
                     children: [
-                      const Text(
-                        "LAT: ",
-                        style: TextStyle(color: primary, fontSize: 14),
+                      Text(
+                        AppLocalizations.of(context)!.lat,
+                        style: const TextStyle(color: primary, fontSize: 14),
                       ),
-                      Text(mapProvider.getCurrentPosition != null ? ((mapProvider.getCurrentPosition!.latitude > 0 ? "N" : "S") + " " + mapProvider.getCurrentPosition!.latitude.toString().replaceAll('.', '°')) : "--", style: const TextStyle(color: Colors.white, fontSize: 18)),
+                      Text(mapProvider.getCurrentPosition != null ? ((mapProvider.getCurrentPosition!.latitude > 0 ? "N" : "S") + " " + mapProvider.getCurrentPosition!.latitude.toStringAsFixed(4).replaceAll('.', '°')) : "--", style: const TextStyle(color: Colors.white, fontSize: 18)),
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,11 +93,11 @@ class _StatusBarState extends State<StatusBar> {
                   ),
                   Row(
                     children: [
-                      const Text(
-                        "LONG: ",
-                        style: TextStyle(color: primary, fontSize: 14),
+                      Text(
+                        AppLocalizations.of(context)!.long,
+                        style: const TextStyle(color: primary, fontSize: 14),
                       ),
-                      Text(mapProvider.getCurrentPosition != null ? ((mapProvider.getCurrentPosition!.longitude > 0 ? "E" : "W") + " " + mapProvider.getCurrentPosition!.longitude.toString().replaceAll('.', '°')) : "--", style: const TextStyle(color: Colors.white, fontSize: 18)),
+                      Text(mapProvider.getCurrentPosition != null ? ((mapProvider.getCurrentPosition!.longitude > 0 ? "E" : "W") + " " + mapProvider.getCurrentPosition!.longitude.toStringAsFixed(4).replaceAll('.', '°')) : "--", style: const TextStyle(color: Colors.white, fontSize: 18)),
 
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -76,10 +107,7 @@ class _StatusBarState extends State<StatusBar> {
               );
               },
             ),
-            Text(
-              "Warning!",
-              style: const TextStyle(color: Colors.amber, fontSize: 15),
-            ),
+            messageBuilder(context),
             Text(
               _currentTimeString,
               style: const TextStyle(color: Colors.white, fontSize: 14),

@@ -83,7 +83,7 @@ class MqttService {
 
   void publish(String topic, String message) {
     if (!isConnected) return;
-    if(!isTopicSubscribed(topic)) return;
+    // if(!isTopicSubscribed(topic)) return;
     final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
     builder.addString(message);
     _client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
