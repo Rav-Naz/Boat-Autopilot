@@ -11,7 +11,7 @@ class SettingsProvider extends ChangeNotifier {
 
   late SharedPreferences _preferences;
   final _mqtt = MqttService();
-  final _mqttTopicString = "/boat/setting/";
+  final _mqttTopicString = "boat/setting/";
   String _language = "en";
 
   Map<String, dynamic> _otherSettings = {};

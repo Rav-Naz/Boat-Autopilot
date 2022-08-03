@@ -27,11 +27,16 @@ class _MotorPanelViewState extends State<MotorPanelView> {
 
   double acutalSpeedInKmPerHour = 0.0;
 
-  double twoEngineLoad = 0.0;
+  double settedTwoEngineLoad = 0.0;
   double actualLeftEngingeLoad = 0.0;
   double actualRightEngingeLoad = 0.0;
   double settedLeftEngingeLoad = 0.0;
   double settedRightEngingeLoad = 0.0;
+
+  double leftMotorVoltage = 0.0;
+  double rightMotorVoltage = 0.0;
+  double leftMotorAmperage = 0.0;
+  double rightMotorAmperage = 0.0;
 
   @override
   void initState() {
@@ -48,24 +53,44 @@ class _MotorPanelViewState extends State<MotorPanelView> {
   }
 
   void _subscribeAllTopics() {
-    _mqtt.subscribe("boat/angle")!.listen((event) {
+    _mqtt.subscribe("boat/main/turning_speed")!.listen((event) {
       setState(() {
         turningSpeed = double.parse(event);
       });
     });
-    _mqtt.subscribe("boat/actual_speed")!.listen((event) {
+    _mqtt.subscribe("boat/main/current_speed")!.listen((event) {
       setState(() {
         acutalSpeedInKmPerHour = double.parse(event);
       });
     });
-    _mqtt.subscribe("boat/l_motor_actual_load")!.listen((event) {
+    _mqtt.subscribe("boat/main/l_motor_actual_load")!.listen((event) {
       setState(() {
         actualLeftEngingeLoad = double.parse(event);
       });
     });
-    _mqtt.subscribe("boat/r_motor_actual_load")!.listen((event) {
+    _mqtt.subscribe("boat/main/r_motor_actual_load")!.listen((event) {
       setState(() {
         actualRightEngingeLoad = double.parse(event);
+      });
+    });
+    _mqtt.subscribe("boat/main/r_motor_voltage")!.listen((event) {
+      setState(() {
+        rightMotorVoltage = double.parse(event);
+      });
+    });
+    _mqtt.subscribe("boat/main/l_motor_voltage")!.listen((event) {
+      setState(() {
+        leftMotorVoltage = double.parse(event);
+      });
+    });
+    _mqtt.subscribe("boat/main/r_motor_amperage")!.listen((event) {
+      setState(() {
+        rightMotorAmperage = double.parse(event);
+      });
+    });
+    _mqtt.subscribe("boat/main/l_motor_amperage")!.listen((event) {
+      setState(() {
+        leftMotorAmperage = double.parse(event);
       });
     });
   }
@@ -75,15 +100,15 @@ class _MotorPanelViewState extends State<MotorPanelView> {
       engineStarted = false;
       settedLeftEngingeLoad = 0.0;
       settedRightEngingeLoad = 0.0;
-      twoEngineLoad = 0.0;
+      settedTwoEngineLoad = 0.0;
     });
-    _mqtt.publish("boat/engine", engineStarted.toString());
+    _mqtt.publish("boat/main/engine", engineStarted.toString());
     _mqtt.publish(
-        "boat/l_motor_setted_load", settedLeftEngingeLoad.toInt().toString());
+        "boat/main/l_motor_setted_load", settedLeftEngingeLoad.toInt().toString());
     _mqtt.publish(
-        "boat/r_motor_setted_load", settedRightEngingeLoad.toInt().toString());
+        "boat/main/r_motor_setted_load", settedRightEngingeLoad.toInt().toString());
     _mqtt.publish(
-        "boat/both_motor_setted_load", twoEngineLoad.toInt().toString());
+        "boat/main/both_motor_setted_load", settedTwoEngineLoad.toInt().toString());
   }
 
   @override
@@ -131,7 +156,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                   engineStarted = true;
                                 });
                                 _mqtt.publish(
-                                    "boat/engine", engineStarted.toString());
+                                    "boat/main/engine", engineStarted.toString());
                               },
                         style: TextButton.styleFrom(
                             splashFactory: NoSplash.splashFactory),
@@ -185,7 +210,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                     callback: (value, setting) {
                       setState(() {
                         manualMode = value;
-                        _mqtt.publish("boat/stering_mode", manualMode.toString());
+                        _mqtt.publish("boat/main/stering_mode", manualMode.toString());
                       });
                     },
                   );
@@ -236,7 +261,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                                 setState(() {
                                                   settedLeftEngingeLoad = value;
                                                   _mqtt.publish(
-                                                      "boat/l_motor_setted_load",
+                                                      "boat/main/l_motor_setted_load",
                                                       settedLeftEngingeLoad
                                                           .toInt()
                                                           .toString());
@@ -385,8 +410,8 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                                   settedRightEngingeLoad =
                                                       value;
                                                   _mqtt.publish(
-                                                      "boat/r_motor_setted_load",
-                                                      settedLeftEngingeLoad
+                                                      "boat/main/r_motor_setted_load",
+                                                      settedRightEngingeLoad
                                                           .toInt()
                                                           .toString());
                                                 });
@@ -418,7 +443,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                     ),
                                     const SizedBox(height: 3),
                                     AutoSizeText(
-                                        (twoEngineLoad).toInt().toString() +
+                                        (settedTwoEngineLoad).toInt().toString() +
                                             "%",
                                         style: const TextStyle(
                                             color: Colors.white, fontSize: 15)),
@@ -462,14 +487,14 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                       child: Slider(
                                         min: -50.0,
                                         max: 100.0,
-                                        value: twoEngineLoad,
+                                        value: settedTwoEngineLoad,
                                         onChanged: engineStarted
                                             ? (value) {
                                                 setState(() {
-                                                  twoEngineLoad = value;
+                                                  settedTwoEngineLoad = value;
                                                   _mqtt.publish(
-                                                      "boat/both_motor_setted_load",
-                                                      settedLeftEngingeLoad
+                                                      "boat/main/both_motor_setted_load",
+                                                      settedTwoEngineLoad
                                                           .toInt()
                                                           .toString());
                                                 });
@@ -523,13 +548,13 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                 children: [
                   MotorPanel(
                       description: "L MOTOR",
-                      voltage: 14.2,
-                      amperage: 16.0,
+                      voltage: leftMotorVoltage,
+                      amperage: leftMotorAmperage,
                       engineLoad: actualLeftEngingeLoad),
                   MotorPanel(
                     description: "R MOTOR",
-                    voltage: 14.6,
-                    amperage: 16.7,
+                    voltage: rightMotorVoltage,
+                    amperage: rightMotorAmperage,
                     engineLoad: actualRightEngingeLoad,
                   ),
                 ],
@@ -587,6 +612,6 @@ class MotorPanel extends StatelessWidget {
   }
 
   get getPercentageLoad {
-    return engineLoad / 100;
+    return engineLoad.abs() / 100;
   }
 }

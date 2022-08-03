@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class MapProvider extends ChangeNotifier {
   }
 
   _subscribePosition() {
-    _mqtt.subscribe("map/position")!.listen((event) {
+    _mqtt.subscribe("boat/map/position")!.listen((event) {
       _currentPosition = nmeaToLatLong(event.toString());
       if (isCentering && isMapLocked && isLoaded) {
         controller.move(_currentPosition!, controller.zoom);
@@ -84,6 +85,7 @@ class MapProvider extends ChangeNotifier {
 
   void addNavigationPoint(LatLng coordinates) {
     if (_currentPosition != null) {
+      _mqtt.publish("boat/map/new_waypoint", jsonEncode(coordinates.toJson()));
       _navigationMarkerPointsList.add(coordinates);
       notifyListeners();
     }
@@ -91,7 +93,8 @@ class MapProvider extends ChangeNotifier {
 
   void removeTopNavigationPoint() {
     if(_navigationMarkerPointsList.isNotEmpty) {
-      _navigationMarkerPointsList.removeLast();
+      var removed = _navigationMarkerPointsList.removeLast();
+      _mqtt.publish("boat/map/remove_top_waypoint", jsonEncode(removed.toJson()));
       notifyListeners();
     }
   }

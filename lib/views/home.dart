@@ -26,28 +26,28 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
   Offset _centerOfGestureDetector = const Offset(300.0, 300.0);
   final GlobalKey _rotateKey = GlobalKey();
   bool isAnimationEnabled = true;
-  var mqtt = MqttService();
+  var _mqtt = MqttService();
   Stream? subTopic;
 
   @override
   void initState() {
-    mqtt.currentConnectionState.listen((state) {
+    _mqtt.currentConnectionState.listen((state) {
       if (state == MqttConnectionState.connected) {
-        mqtt.subscribe("home/garden/fountain")!.listen((event) {
+        _mqtt.subscribe("boat/main/gyro")!.listen((event) {
           if(mounted) {
           setState(() {
             _currentBoatAngle = (double.parse(event) * pi) / 180 * -1;
           });
           }
         });
-        mqtt.subscribe("boat/actual_speed")!.listen((event) {
+        _mqtt.subscribe("boat/main/current_speed")!.listen((event) {
           if(mounted) {
           setState(() {
             _currentBoatSpeed = double.parse(event);
           });
           }
         });
-        mqtt.subscribe("home/garden/fountain2")!.listen((event) {
+        _mqtt.subscribe("boat/main/setted_speed")!.listen((event) {
           if(mounted) {    
           setState(() {
             _settedBoatSpeed = double.parse(event);
@@ -140,7 +140,7 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                                       (touchPositionFromCenter.direction +
                                               _upsetAngle) %
                                           (pi * 2);
-                                  mqtt.publish('home/garden/fountain3', _settedBoatAngle.toString());
+                                  _mqtt.publish('boat/main/heading', (_settedBoatAngle*180/pi).toString());
                                 },
                               );
                             },
@@ -187,14 +187,14 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                       setState(() {
                         _settedBoatAngle =  (((_settedBoatAngle*180/pi)-1)%360)*pi/180;
                       });
-                      mqtt.publish('home/garden/fountain3', _settedBoatAngle.toString());
+                      _mqtt.publish('boat/main/heading', (_settedBoatAngle*180/pi).toString());
                     }, icon: const Icon(Icons.remove), color: accent, ), decoration: BoxDecoration(color: primaryDarkest, borderRadius: BorderRadius.circular(100)),),
                     const SizedBox(width: 30,),
                     Container(child: IconButton(onPressed: () {
                       setState(() {
                         _settedBoatAngle =  (((_settedBoatAngle*180/pi)+1)%360)*pi/180;
                       });
-                      mqtt.publish('home/garden/fountain3', _settedBoatAngle.toString());
+                      _mqtt.publish('boat/main/heading', (_settedBoatAngle*180/pi).toString());
                     }, icon: const Icon(Icons.add), color: accent, ), decoration: BoxDecoration(color: primaryDarkest, borderRadius: BorderRadius.circular(100)),),
                   ],
                 )
@@ -220,14 +220,14 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                       // setState(() {
                       //   _settedBoatAngle -= 1*pi/180;
                       // });
-                      mqtt.publish('home/garden/fountain2', (_settedBoatSpeed-1).toString());
+                      _mqtt.publish('boat/main/setted_speed', (_settedBoatSpeed-1).toString());
                     }, icon: const Icon(Icons.remove), color: accent, ), decoration: BoxDecoration(color: primaryDarkest, borderRadius: BorderRadius.circular(100)),),
                     const SizedBox(width: 30,),
                     Container(child: IconButton(onPressed: () {
                       // setState(() {
                       //   _settedBoatAngle -= 1*pi/180;
                       // });
-                      mqtt.publish('home/garden/fountain2', (_settedBoatSpeed+1).toString());
+                      _mqtt.publish('boat/main/setted_speed', (_settedBoatSpeed+1).toString());
                     }, icon: const Icon(Icons.add), color: accent, ), decoration: BoxDecoration(color: primaryDarkest, borderRadius: BorderRadius.circular(100)),),
                   ],
                 )
