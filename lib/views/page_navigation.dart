@@ -3,7 +3,6 @@ import 'package:boat_autopilot/shared/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class PageNavigationView extends StatefulWidget {
   @override
   _PageNavigationViewState createState() => _PageNavigationViewState();
@@ -13,7 +12,7 @@ class _PageNavigationViewState extends State<PageNavigationView> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 85,
+      width: 80,
       child: Column(
         children: const [
           _NavigationButton(icon: Icons.directions_boat, index: 0),
@@ -42,9 +41,7 @@ class _NavigationButton extends StatelessWidget {
           child: Consumer<NavigationProvider>(
             builder: (context, navigationProvider, child) {
               return Opacity(
-                opacity: navigationProvider.currentViewIndex == index
-                    ? 1
-                    : 0.6,
+                opacity: navigationProvider.currentViewIndex == index ? 1 : 0.6,
                 child: Container(
                   child: IconButton(
                     icon: Icon(
@@ -52,7 +49,7 @@ class _NavigationButton extends StatelessWidget {
                       color: navigationProvider.currentViewIndex == index
                           ? Colors.white
                           : primary,
-                      size: 40,
+                      size: 35,
                     ),
                     onPressed: () {
                       Provider.of<NavigationProvider>(context, listen: false)

@@ -13,7 +13,10 @@ class ChooserWidget extends StatelessWidget {
   Function? callback;
 
   ChooserWidget(
-      {required this.settingKey, required this.options, this.settingName, this.callback});
+      {required this.settingKey,
+      required this.options,
+      this.settingName,
+      this.callback});
 
   void chooseDialog(context) {
     showDialog(
@@ -28,7 +31,7 @@ class ChooserWidget extends StatelessWidget {
                         ),
                     child: Text(
                       AppLocalizations.of(context)!.close,
-                      style: const TextStyle(color: accent, fontSize: 15),
+                      style: const TextStyle(color: accent, fontSize: 12),
                     ),
                     onPressed: () => {Navigator.of(context).pop()},
                   )
@@ -45,7 +48,7 @@ class ChooserWidget extends StatelessWidget {
                             child: Text(
                               e,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 15),
+                                  color: Colors.white, fontSize: 12),
                             ),
                           ),
                           onPressed: () {
@@ -77,7 +80,7 @@ class ChooserWidget extends StatelessWidget {
                       child: AutoSizeText(settingName ?? "",
                           maxLines: 2,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 15)))),
+                              color: Colors.white, fontSize: 12)))),
               Padding(
                 padding: const EdgeInsets.only(right: 30),
                 child: GestureDetector(
@@ -85,14 +88,14 @@ class ChooserWidget extends StatelessWidget {
                     chooseDialog(context);
                   },
                   child: Container(
-                      height: 40,
-                      width: 130,
+                      height: 35,
+                      width: 120,
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: Center(
-                            child: Text(value,
-                          style: const TextStyle(
-                              color: accent, fontSize: 14),
+                            child: Text(
+                          value,
+                          style: const TextStyle(color: accent, fontSize: 13),
                         )),
                       ),
                       decoration: BoxDecoration(

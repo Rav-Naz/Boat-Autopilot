@@ -103,12 +103,12 @@ class _MotorPanelViewState extends State<MotorPanelView> {
       settedTwoEngineLoad = 0.0;
     });
     _mqtt.publish("boat/main/engine", engineStarted.toString());
-    _mqtt.publish(
-        "boat/main/l_motor_setted_load", settedLeftEngingeLoad.toInt().toString());
-    _mqtt.publish(
-        "boat/main/r_motor_setted_load", settedRightEngingeLoad.toInt().toString());
-    _mqtt.publish(
-        "boat/main/both_motor_setted_load", settedTwoEngineLoad.toInt().toString());
+    _mqtt.publish("boat/main/l_motor_setted_load",
+        settedLeftEngingeLoad.toInt().toString());
+    _mqtt.publish("boat/main/r_motor_setted_load",
+        settedRightEngingeLoad.toInt().toString());
+    _mqtt.publish("boat/main/both_motor_setted_load",
+        settedTwoEngineLoad.toInt().toString());
   }
 
   @override
@@ -128,10 +128,10 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                 Text(AppLocalizations.of(context)!.turning_speed,
                     style: const TextStyle(
                         color: primary,
-                        fontSize: 14,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500)),
                 const SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 BargrafWidget(
                   value: turningSpeed,
@@ -155,17 +155,17 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                 setState(() {
                                   engineStarted = true;
                                 });
-                                _mqtt.publish(
-                                    "boat/main/engine", engineStarted.toString());
+                                _mqtt.publish("boat/main/engine",
+                                    engineStarted.toString());
                               },
                         style: TextButton.styleFrom(
                             splashFactory: NoSplash.splashFactory),
                         child: Container(
                             child: const Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: EdgeInsets.all(7.0),
                               child: Text(
                                 "START",
-                                style: TextStyle(color: accent),
+                                style: TextStyle(color: accent, fontSize: 12),
                               ),
                             ),
                             decoration: BoxDecoration(
@@ -173,15 +173,13 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                 border: Border.all(color: accent))),
                       ),
                       TextButton(
-                        onPressed: engineStarted
-                            ? offEngine
-                            : null,
+                        onPressed: engineStarted ? offEngine : null,
                         child: Container(
                             child: const Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: EdgeInsets.all(7.0),
                               child: Text(
                                 "STOP",
-                                style: TextStyle(color: primary),
+                                style: TextStyle(color: primary, fontSize: 12),
                               ),
                             ),
                             decoration: BoxDecoration(
@@ -192,34 +190,36 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Text(AppLocalizations.of(context)!.steerage,
                     style: const TextStyle(
                         color: primary,
-                        fontSize: 14,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500)),
-                Consumer<MapProvider>(
-                  builder: (context, mapProvider, child) {
-                    return BipolarSwitchWidget(
+                Consumer<MapProvider>(builder: (context, mapProvider, child) {
+                  return BipolarSwitchWidget(
                     settingKey: "sterowanie",
                     name1: "AUTO",
                     name2: "MAN",
-                    enabled: mapProvider.getNavigationMarkerPointsList.isNotEmpty || !manualMode,
+                    enabled:
+                        mapProvider.getNavigationMarkerPointsList.isNotEmpty ||
+                            !manualMode,
                     initialValue: manualMode,
                     callback: (value, setting) {
                       setState(() {
                         manualMode = value;
-                        _mqtt.publish("boat/main/stering_mode", manualMode.toString());
+                        _mqtt.publish(
+                            "boat/main/stering_mode", manualMode.toString());
                       });
                     },
                   );
-                  }
-                  ),
+                }),
                 Opacity(
-                  opacity: engineStarted ? 1 : 0.4,
+                  opacity: 1,
+                  // opacity: engineStarted ? 1 : 0.4,
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.55,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -230,15 +230,15 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(7.0),
+                                    padding: const EdgeInsets.all(0.0),
                                     child: Row(
                                       children: [
                                         Transform(
                                             alignment: Alignment.center,
                                             transform: Matrix4.rotationY(pi),
                                             child: SizedBox(
-                                                width: 30,
-                                                height: 30,
+                                                width: 20,
+                                                height: 20,
                                                 child: SvgPicture.asset(
                                                   "assets/svg/fan.svg",
                                                   color: primary,
@@ -251,7 +251,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                     child: SizedBox(
                                       width:
                                           MediaQuery.of(context).size.height *
-                                              0.40,
+                                              0.35,
                                       child: Slider(
                                         min: -50.0,
                                         max: 100.0,
@@ -298,7 +298,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                                 color: primary,
-                                                fontSize: 13,
+                                                fontSize: 10,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           const SizedBox(height: 3),
@@ -309,7 +309,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                                   "%",
                                               style: const TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 15)),
+                                                  fontSize: 12)),
                                         ],
                                       ),
                                     ),
@@ -328,7 +328,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                                 color: primary,
-                                                fontSize: 13,
+                                                fontSize: 10,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           const SizedBox(height: 3),
@@ -339,7 +339,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                                   " km/h",
                                               style: const TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 15)),
+                                                  fontSize: 12)),
                                         ],
                                       ),
                                     ),
@@ -358,7 +358,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                                 color: primary,
-                                                fontSize: 13,
+                                                fontSize: 10,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           const SizedBox(height: 3),
@@ -369,7 +369,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                                   "%",
                                               style: const TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 15)),
+                                                  fontSize: 12)),
                                         ],
                                       ),
                                     ),
@@ -381,12 +381,12 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(7.0),
+                                    padding: const EdgeInsets.all(0.0),
                                     child: Row(
                                       children: [
                                         SizedBox(
-                                            width: 30,
-                                            height: 30,
+                                            width: 20,
+                                            height: 20,
                                             child: SvgPicture.asset(
                                               "assets/svg/fan.svg",
                                               color: primary,
@@ -399,7 +399,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                     child: SizedBox(
                                       width:
                                           MediaQuery.of(context).size.height *
-                                              0.40,
+                                              0.35,
                                       child: Slider(
                                         min: -50.0,
                                         max: 100.0,
@@ -438,15 +438,17 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                           color: primary,
-                                          fontSize: 13,
+                                          fontSize: 10,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    const SizedBox(height: 3),
+                                    const SizedBox(height: 2),
                                     AutoSizeText(
-                                        (settedTwoEngineLoad).toInt().toString() +
+                                        (settedTwoEngineLoad)
+                                                .toInt()
+                                                .toString() +
                                             "%",
                                         style: const TextStyle(
-                                            color: Colors.white, fontSize: 15)),
+                                            color: Colors.white, fontSize: 12)),
                                   ],
                                 ),
                               ),
@@ -455,22 +457,22 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(7.0),
+                                    padding: const EdgeInsets.all(2.0),
                                     child: Row(
                                       children: [
                                         Transform(
                                             alignment: Alignment.center,
                                             transform: Matrix4.rotationY(pi),
                                             child: SizedBox(
-                                                width: 30,
-                                                height: 30,
+                                                width: 20,
+                                                height: 20,
                                                 child: SvgPicture.asset(
                                                   "assets/svg/fan.svg",
                                                   color: primary,
                                                 ))),
                                         SizedBox(
-                                            width: 30,
-                                            height: 30,
+                                            width: 20,
+                                            height: 20,
                                             child: SvgPicture.asset(
                                               "assets/svg/fan.svg",
                                               color: primary,
@@ -483,7 +485,7 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                     child: SizedBox(
                                       width:
                                           MediaQuery.of(context).size.height *
-                                              0.45,
+                                              0.33,
                                       child: Slider(
                                         min: -50.0,
                                         max: 100.0,
@@ -520,17 +522,17 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                           color: primary,
-                                          fontSize: 13,
+                                          fontSize: 10,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    const SizedBox(height: 3),
+                                    const SizedBox(height: 2),
                                     AutoSizeText(
                                         acutalSpeedInKmPerHour
                                                 .toInt()
                                                 .toString() +
                                             " km/h",
                                         style: const TextStyle(
-                                            color: Colors.white, fontSize: 15)),
+                                            color: Colors.white, fontSize: 12)),
                                   ],
                                 ),
                               ),
@@ -586,15 +588,15 @@ class MotorPanel extends StatelessWidget {
         Text(
           description.toUpperCase(),
           style: const TextStyle(
-              color: primary, fontSize: 13, fontWeight: FontWeight.bold),
+              color: primary, fontSize: 10, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 3),
+        const SizedBox(height: 2),
         Text(
             "${voltage.toStringAsFixed(1)} V | ${amperage.toStringAsFixed(1)} A",
-            style: const TextStyle(color: Colors.white, fontSize: 13)),
-        const SizedBox(height: 3),
+            style: const TextStyle(color: Colors.white, fontSize: 10)),
+        const SizedBox(height: 2),
         Container(
-          height: 7,
+          height: 5,
           width: 60,
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -602,10 +604,10 @@ class MotorPanel extends StatelessWidget {
                   stops: [getPercentageLoad, getPercentageLoad]),
               borderRadius: BorderRadius.circular(30)),
         ),
-        const SizedBox(height: 3),
+        const SizedBox(height: 2),
         Text(
           engineLoad.toInt().toString() + "%",
-          style: const TextStyle(color: Colors.white, fontSize: 13),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         )
       ],
     );

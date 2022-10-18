@@ -36,11 +36,13 @@ class PlusMinusWidget extends StatelessWidget {
                       child: AutoSizeText(settingName ?? "",
                           maxLines: 2,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 15)))),
+                              color: Colors.white, fontSize: 12)))),
               Row(children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
+                    constraints:
+                        const BoxConstraints(maxHeight: 30, maxWidth: 30),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(400),
                         color: primaryDarkest),
@@ -52,7 +54,7 @@ class PlusMinusWidget extends StatelessWidget {
                       },
                       icon: const Icon(Icons.remove),
                       color: accent,
-                      iconSize: 20,
+                      iconSize: 15,
                     ),
                   ),
                 ),
@@ -61,12 +63,14 @@ class PlusMinusWidget extends StatelessWidget {
                     child: AutoSizeText(
                       value.toString(),
                       maxLines: 1,
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                       textAlign: TextAlign.center,
                     )),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 8, 25, 8),
                   child: Container(
+                    constraints:
+                        const BoxConstraints(maxHeight: 30, maxWidth: 30),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(400),
                         color: primaryDarkest),
@@ -78,7 +82,7 @@ class PlusMinusWidget extends StatelessWidget {
                       },
                       icon: const Icon(Icons.add),
                       color: accent,
-                      iconSize: 20,
+                      iconSize: 15,
                     ),
                   ),
                 )

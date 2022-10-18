@@ -36,7 +36,8 @@ class _BipolarSwitchWidgetState extends State<BipolarSwitchWidget> {
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
       child: Consumer<SettingsProvider>(
         builder: (context, settingsProvider, child) {
-          var value =  widget.initialValue ?? settingsProvider.getSetting(widget.settingKey) == 'true';
+          var value = widget.initialValue ??
+              settingsProvider.getSetting(widget.settingKey) == 'true';
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -46,18 +47,22 @@ class _BipolarSwitchWidgetState extends State<BipolarSwitchWidget> {
                       child: AutoSizeText(widget.settingName ?? "",
                           maxLines: 2,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 15)))),
+                              color: Colors.white, fontSize: 12)))),
               GestureDetector(
-                onTap: widget.enabled ? () {
-                  if (widget.callback != null) {
-                    setState(() {
-                      widget.initialValue = !widget.initialValue!;
-                    });
-                    widget.callback!(widget.initialValue, widget.settingKey);
-                  } else {
-                    settingsProvider.setSetting(widget.settingKey, (!value).toString());
-                  }
-                } : null,
+                onTap: widget.enabled
+                    ? () {
+                        if (widget.callback != null) {
+                          setState(() {
+                            widget.initialValue = !widget.initialValue!;
+                          });
+                          widget.callback!(
+                              widget.initialValue, widget.settingKey);
+                        } else {
+                          settingsProvider.setSetting(
+                              widget.settingKey, (!value).toString());
+                        }
+                      }
+                    : null,
                 child: Row(
                   children: [
                     SizedBox(
@@ -67,36 +72,41 @@ class _BipolarSwitchWidgetState extends State<BipolarSwitchWidget> {
                           maxLines: 1,
                           style: TextStyle(
                               color: (value) ? primary : accent,
-                              fontSize: 15,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                           textAlign: TextAlign.right,
                         )),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: SizedBox(
-                          width: 60,
-                          height: 30,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(color: primary),
-                                borderRadius: BorderRadius.circular(100)),
-                            child: Stack(children: [
-                              AnimatedPositioned(
-                                top: 5,
-                                bottom: 5,
-                                left: (value) ? 35 : 5,
-                                right: (value) ? 5 : 35,
-                                child: Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                      color: accent,
-                                      borderRadius: BorderRadius.circular(50)),
-                                ),
-                                duration: const Duration(milliseconds: 100),
-                              )
-                            ]),
-                          )),
+                    Transform.scale(
+                      scale: 0.8,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: SizedBox(
+                            width: 60,
+                            height: 30,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: primary, width: 1.5),
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: Stack(children: [
+                                AnimatedPositioned(
+                                  top: 5,
+                                  bottom: 5,
+                                  left: (value) ? 35 : 5,
+                                  right: (value) ? 5 : 35,
+                                  child: Container(
+                                    width: 15,
+                                    height: 15,
+                                    decoration: BoxDecoration(
+                                        color: accent,
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                  ),
+                                  duration: const Duration(milliseconds: 100),
+                                )
+                              ]),
+                            )),
+                      ),
                     ),
                     SizedBox(
                         width: 60,
@@ -105,7 +115,7 @@ class _BipolarSwitchWidgetState extends State<BipolarSwitchWidget> {
                           maxLines: 1,
                           style: TextStyle(
                               color: !(value) ? primary : accent,
-                              fontSize: 15,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         )),
                   ],

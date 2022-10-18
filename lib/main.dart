@@ -26,41 +26,43 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 
-  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
-
+  static _MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>();
 }
 
 class _MyAppState extends State<MyApp> {
-
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<NavigationProvider>(create: (BuildContext context) => NavigationProvider()),
-        ChangeNotifierProvider<MapProvider>(create: (BuildContext context) => MapProvider()),
-        ChangeNotifierProvider<SettingsProvider>(create: (BuildContext context) => SettingsProvider()),
-        ChangeNotifierProvider<MessagesProvider>(create: (BuildContext context) => MessagesProvider()),
+        ChangeNotifierProvider<NavigationProvider>(
+            create: (BuildContext context) => NavigationProvider()),
+        ChangeNotifierProvider<MapProvider>(
+            create: (BuildContext context) => MapProvider()),
+        ChangeNotifierProvider<SettingsProvider>(
+            create: (BuildContext context) => SettingsProvider()),
+        ChangeNotifierProvider<MessagesProvider>(
+            create: (BuildContext context) => MessagesProvider()),
       ],
       child: Consumer<SettingsProvider>(
         builder: (context, value, child) {
           return MaterialApp(
-          locale: Locale(value.getLanguage),
-          supportedLocales: L10n.all,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
-          ],
-          debugShowCheckedModeBanner: false,
-          title: 'Autopilot',
-          theme: ThemeData(
-            fontFamily: 'Inter',
-            primarySwatch: Colors.blue,
-          ),
-          home: const MyHomePage(),
-        );
+            locale: Locale(value.getLanguage),
+            supportedLocales: L10n.all,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
+            debugShowCheckedModeBanner: false,
+            title: 'Autopilot',
+            theme: ThemeData(
+              fontFamily: 'Inter',
+              primarySwatch: Colors.blue,
+            ),
+            home: const MyHomePage(),
+          );
         },
       ),
     );
@@ -85,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage>
             children: [
               const StatusBar(),
               SizedBox(
-                height: MediaQuery.of(context).size.height-50,
+                height: MediaQuery.of(context).size.height - 30,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -93,15 +95,11 @@ class _MyHomePageState extends State<MyHomePage>
                       child: Consumer<NavigationProvider>(
                         builder: (context, navigationProvider, child) {
                           return PageView(
-                          controller: navigationProvider.getPageController,
-                          // scrollDirection: Axis.vertical,
-                          onPageChanged: navigationProvider.onViewChanged,
-                          children: [
-                            HomeView(),
-                            MapView(),
-                            SettingsView()
-                          ],
-                        );
+                            controller: navigationProvider.getPageController,
+                            // scrollDirection: Axis.vertical,
+                            onPageChanged: navigationProvider.onViewChanged,
+                            children: [HomeView(), MapView(), SettingsView()],
+                          );
                         },
                       ),
                     ),

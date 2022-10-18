@@ -21,7 +21,9 @@ class BargrafWidget extends StatelessWidget {
         child: SizedBox(
           width: halfSize,
           child: Row(
-            mainAxisAlignment: value.isNegative ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: value.isNegative
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             children: [
               SizedBox(
                 width: percentage,
@@ -29,11 +31,19 @@ class BargrafWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: value.isNegative ? Colors.red : Colors.green,
                         borderRadius: BorderRadius.only(
-                            topLeft: value.isNegative ? const Radius.circular(50) : const Radius.circular(0),
-                            bottomLeft: value.isNegative ? const Radius.circular(50) : const Radius.circular(0),
-                            topRight: value.isNegative ? const Radius.circular(0) : const Radius.circular(50),
-                            bottomRight: value.isNegative ? const Radius.circular(0) : const Radius.circular(50),
-                            ))),
+                          topLeft: value.isNegative
+                              ? const Radius.circular(50)
+                              : const Radius.circular(0),
+                          bottomLeft: value.isNegative
+                              ? const Radius.circular(50)
+                              : const Radius.circular(0),
+                          topRight: value.isNegative
+                              ? const Radius.circular(0)
+                              : const Radius.circular(50),
+                          bottomRight: value.isNegative
+                              ? const Radius.circular(0)
+                              : const Radius.circular(50),
+                        ))),
               )
             ],
           ),
@@ -46,20 +56,20 @@ class BargrafWidget extends StatelessWidget {
           child: AutoSizeText(
             (value).toString() + "°/min",
             textAlign: TextAlign.center,
-            style:
-                const TextStyle(color: Colors.white, fontSize: 14, height: 1.25),
+            style: const TextStyle(
+                color: Colors.white, fontSize: 12, height: 1.25),
           ),
         ),
       )
     ];
-    return value.isNegative ? children: children.reversed.toList();
+    return value.isNegative ? children : children.reversed.toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(4),
-      height: 30,
+      padding: const EdgeInsets.all(2),
+      height: 25,
       width: 200,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),

@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class MapView extends StatefulWidget {
   @override
   _MapViewState createState() => _MapViewState();
@@ -24,7 +23,9 @@ class _MapViewState extends State<MapView> {
     return Consumer<MapProvider>(
       builder: (context, mapProvider, child) {
         var latlong = mapProvider.getCurrentPosition;
-        if (_lastLatLong != null && _lastLatLong != latlong && latlong != null) {
+        if (_lastLatLong != null &&
+            _lastLatLong != latlong &&
+            latlong != null) {
           var w = latlong.latitude - _lastLatLong!.latitude;
           var h = latlong.longitude - _lastLatLong!.longitude;
           var atans = atan((h / w)) / pi * 180;
@@ -44,15 +45,17 @@ class _MapViewState extends State<MapView> {
           mapController: mapProvider.controller,
           nonRotatedChildren: [
             Positioned(
-                left: 30,
-                bottom: 30,
+                left: 15,
+                bottom: 15,
                 child: Column(
                   children: [
                     Visibility(
-                        visible: mapProvider.getNavigationMarkerPointsList.isNotEmpty,
+                        visible: mapProvider
+                            .getNavigationMarkerPointsList.isNotEmpty,
                         child: MapButton(
                             mapProvider: mapProvider,
-                            onPressFunction: mapProvider.removeTopNavigationPoint,
+                            onPressFunction:
+                                mapProvider.removeTopNavigationPoint,
                             iconOn: Icons.undo)),
                     Visibility(
                         visible: mapProvider.isMapLocked,
@@ -83,22 +86,23 @@ class _MapViewState extends State<MapView> {
               left: 30,
               right: 30,
               child: Visibility(
-                visible: mapProvider.getNavigationMarkerPointsList.isEmpty && _lastLatLong != null,
+                visible: mapProvider.getNavigationMarkerPointsList.isEmpty &&
+                    _lastLatLong != null,
                 child: Center(
-                        child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: primaryDark),
-                      child: Text(
-                        AppLocalizations.of(context)!.waypoint_info,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    )),
+                    child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: primaryDark),
+                  child: Text(
+                    AppLocalizations.of(context)!.waypoint_info,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                )),
               ),
             )
           ],
@@ -118,8 +122,8 @@ class _MapViewState extends State<MapView> {
                     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 subdomains: ['a', 'b', 'c']),
             PolylineLayerOptions(
-            polylineCulling: false,
-            polylines: [
+              polylineCulling: false,
+              polylines: [
                 Polyline(
                   strokeWidth: 5,
                   points: mapProvider.getNavigationMarkerPointsPassedList,
@@ -127,36 +131,59 @@ class _MapViewState extends State<MapView> {
                 ),
                 Polyline(
                   strokeWidth: 5,
-                  points: mapProvider.getNavigationMarkerPointsPassedList.isNotEmpty ? [mapProvider.getNavigationMarkerPointsPassedList.last]+mapProvider.getNavigationMarkerPointsList : mapProvider.getNavigationMarkerPointsList,
+                  points: mapProvider
+                          .getNavigationMarkerPointsPassedList.isNotEmpty
+                      ? [mapProvider.getNavigationMarkerPointsPassedList.last] +
+                          mapProvider.getNavigationMarkerPointsList
+                      : mapProvider.getNavigationMarkerPointsList,
                   color: accent,
                 ),
-            ],
-        ),
+              ],
+            ),
             MarkerLayerOptions(
                 markers: _lastLatLong != null
                     ? mapProvider.getNavigationMarkerPointsPassedList.map((e) {
-                          var index = mapProvider.getNavigationMarkerPointsList.indexOf(e) + 1;
-                          return Marker(
+                        var index = mapProvider.getNavigationMarkerPointsList
+                                .indexOf(e) +
+                            1;
+                        return Marker(
                             width: 10,
                             height: 10,
-                              builder: (context) {
-                                return Container(decoration: BoxDecoration(color: primary,borderRadius: BorderRadius.circular(50)));
-                              },
-                              point: e);
-                        }).toList()
+                            builder: (context) {
+                              return Container(
+                                  decoration: BoxDecoration(
+                                      color: primary,
+                                      borderRadius: BorderRadius.circular(50)));
+                            },
+                            point: e);
+                      }).toList()
                     : []),
-
             MarkerLayerOptions(
                 markers: _lastLatLong != null
-                    ? (
-                        mapProvider.getNavigationMarkerPointsList.map((e) {
-                          var index = mapProvider.getNavigationMarkerPointsList.indexOf(e) + 1;
+                    ? (mapProvider.getNavigationMarkerPointsList.map((e) {
+                          var index = mapProvider.getNavigationMarkerPointsList
+                                  .indexOf(e) +
+                              1;
                           return Marker(
                               builder: (context) {
-                                return Container(decoration: BoxDecoration(color: accent,borderRadius: BorderRadius.circular(50)), width: 20, height: 20, child: Center(child: Text(index.toString(), style: const TextStyle(color: primaryDarkest, fontWeight: FontWeight.bold),)),);
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      color: accent,
+                                      borderRadius: BorderRadius.circular(50)),
+                                  width: 20,
+                                  height: 20,
+                                  child: Center(
+                                      child: Text(
+                                    index.toString(),
+                                    style: const TextStyle(
+                                        color: primaryDarkest,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                                );
                               },
                               point: e);
-                        }).toList() + [
+                        }).toList() +
+                        [
                           Marker(
                               width: 50,
                               height: 100,
@@ -192,6 +219,7 @@ class MapButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
+        constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(400), color: primaryDarkest),
         child: IconButton(
@@ -199,7 +227,7 @@ class MapButton extends StatelessWidget {
           icon: Icon(
               indicator != null ? (indicator! ? iconOn : iconOff) : iconOn),
           color: accent,
-          iconSize: 35,
+          iconSize: 25,
         ),
       ),
     );
@@ -224,6 +252,5 @@ class BoatMarker extends StatelessWidget {
                 fit: BoxFit.cover)),
       ),
     );
-
   }
 }
