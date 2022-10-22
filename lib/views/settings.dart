@@ -1,5 +1,6 @@
 import 'package:boat_autopilot/providers/settings_provider.dart';
 import 'package:boat_autopilot/shared/colors.dart';
+import 'package:boat_autopilot/widgets/joystick.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,38 +10,37 @@ import '../widgets/bipolar_switch.dart';
 import '../widgets/chooser.dart';
 import '../widgets/plus_minus.dart';
 
-
 class SettingsView extends StatefulWidget {
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
-
   List<Widget> buildSettings(context) {
     return [
-    BipolarSwitchWidget(
-      settingName: AppLocalizations.of(context)!.setting1,
-      settingKey: 'setting1',
-    ),
-    PlusMinusWidget(
-      settingName: AppLocalizations.of(context)!.setting2,
-      settingKey: "setting2",
-    ),
-    ChooserWidget(
-      options: const ["Polski", "English"],
-      settingKey: "language",
-      settingName: AppLocalizations.of(context)!.interface_language,
-      callback: (context, value) {
-        if (value == "Polski") {
-          Provider.of<SettingsProvider>(context, listen: false).setLanguage("pl");
-        }
-        else if (value == "English") {
-          Provider.of<SettingsProvider>(context, listen: false).setLanguage("en");
-        }
-      },
-    ),
-  ];
+      BipolarSwitchWidget(
+        settingName: AppLocalizations.of(context)!.setting1,
+        settingKey: 'setting1',
+      ),
+      PlusMinusWidget(
+        settingName: AppLocalizations.of(context)!.setting2,
+        settingKey: "setting2",
+      ),
+      ChooserWidget(
+        options: const ["Polski", "English"],
+        settingKey: "language",
+        settingName: AppLocalizations.of(context)!.interface_language,
+        callback: (context, value) {
+          if (value == "Polski") {
+            Provider.of<SettingsProvider>(context, listen: false)
+                .setLanguage("pl");
+          } else if (value == "English") {
+            Provider.of<SettingsProvider>(context, listen: false)
+                .setLanguage("en");
+          }
+        },
+      ),
+    ];
   }
 
   @override
