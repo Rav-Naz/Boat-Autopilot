@@ -27,6 +27,7 @@ class _HomeViewState extends State<HomeView>
   final GlobalKey _rotateKey = GlobalKey();
   bool isAnimationEnabled = true;
   var _mqtt = MqttService();
+  var _isManualMode = true;
   Stream? subTopic;
 
   @override
@@ -51,6 +52,13 @@ class _HomeViewState extends State<HomeView>
           if (mounted) {
             setState(() {
               _settedBoatSpeed = double.parse(event);
+            });
+          }
+        });
+        _mqtt.subscribe("boat/main/stering_mode")!.listen((event) {
+          if (mounted) {
+            setState(() {
+              _isManualMode = event == 'true';
             });
           }
         });
@@ -204,56 +212,69 @@ class _HomeViewState extends State<HomeView>
                           color: Colors.white,
                           fontSize: 40 * mediaWidth * 0.001,
                           fontWeight: FontWeight.bold)),
-                  Row(
-                    children: [
-                      Container(
-                        child: IconButton(
-                          iconSize: 15,
-                          constraints:
-                              const BoxConstraints(maxHeight: 30, maxWidth: 30),
-                          onPressed: () {
-                            setState(() {
-                              _settedBoatAngle =
-                                  (((_settedBoatAngle * 180 / pi) - 1) % 360) *
-                                      pi /
-                                      180;
-                            });
-                            _mqtt.publish('boat/main/heading',
-                                (_settedBoatAngle * 180 / pi).toString());
-                          },
-                          icon: const Icon(Icons.remove),
-                          color: accent,
-                        ),
-                        decoration: BoxDecoration(
-                            color: primaryDarkest,
-                            borderRadius: BorderRadius.circular(100)),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        child: IconButton(
-                          iconSize: 15,
-                          constraints:
-                              const BoxConstraints(maxHeight: 30, maxWidth: 30),
-                          onPressed: () {
-                            setState(() {
-                              _settedBoatAngle =
-                                  (((_settedBoatAngle * 180 / pi) + 1) % 360) *
-                                      pi /
-                                      180;
-                            });
-                            _mqtt.publish('boat/main/heading',
-                                (_settedBoatAngle * 180 / pi).toString());
-                          },
-                          icon: const Icon(Icons.add),
-                          color: accent,
-                        ),
-                        decoration: BoxDecoration(
-                            color: primaryDarkest,
-                            borderRadius: BorderRadius.circular(100)),
-                      ),
-                    ],
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: _isManualMode
+                        ? Text(0.0.toString(),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 25))
+                        : Row(
+                            children: [
+                              Container(
+                                child: IconButton(
+                                  iconSize: 15,
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 30, maxWidth: 30),
+                                  onPressed: () {
+                                    setState(() {
+                                      _settedBoatAngle =
+                                          (((_settedBoatAngle * 180 / pi) - 1) %
+                                                  360) *
+                                              pi /
+                                              180;
+                                    });
+                                    _mqtt.publish(
+                                        'boat/main/heading',
+                                        (_settedBoatAngle * 180 / pi)
+                                            .toString());
+                                  },
+                                  icon: const Icon(Icons.remove),
+                                  color: accent,
+                                ),
+                                decoration: BoxDecoration(
+                                    color: primaryDarkest,
+                                    borderRadius: BorderRadius.circular(100)),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                child: IconButton(
+                                  iconSize: 15,
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 30, maxWidth: 30),
+                                  onPressed: () {
+                                    setState(() {
+                                      _settedBoatAngle =
+                                          (((_settedBoatAngle * 180 / pi) + 1) %
+                                                  360) *
+                                              pi /
+                                              180;
+                                    });
+                                    _mqtt.publish(
+                                        'boat/main/heading',
+                                        (_settedBoatAngle * 180 / pi)
+                                            .toString());
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  color: accent,
+                                ),
+                                decoration: BoxDecoration(
+                                    color: primaryDarkest,
+                                    borderRadius: BorderRadius.circular(100)),
+                              ),
+                            ],
+                          ),
                   )
                 ],
               )),
@@ -291,50 +312,59 @@ class _HomeViewState extends State<HomeView>
                           color: Colors.white,
                           fontSize: 40 * mediaWidth * 0.001,
                           fontWeight: FontWeight.bold)),
-                  Row(
-                    children: [
-                      Container(
-                        child: IconButton(
-                          iconSize: 15,
-                          constraints:
-                              const BoxConstraints(maxHeight: 30, maxWidth: 30),
-                          onPressed: () {
-                            // setState(() {
-                            //   _settedBoatAngle -= 1*pi/180;
-                            // });
-                            _mqtt.publish('boat/main/setted_speed',
-                                (_settedBoatSpeed - 1).toString());
-                          },
-                          icon: const Icon(Icons.remove),
-                          color: accent,
-                        ),
-                        decoration: BoxDecoration(
-                            color: primaryDarkest,
-                            borderRadius: BorderRadius.circular(100)),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        child: IconButton(
-                          iconSize: 15,
-                          constraints:
-                              const BoxConstraints(maxHeight: 30, maxWidth: 30),
-                          onPressed: () {
-                            // setState(() {
-                            //   _settedBoatAngle -= 1*pi/180;
-                            // });
-                            _mqtt.publish('boat/main/setted_speed',
-                                (_settedBoatSpeed + 1).toString());
-                          },
-                          icon: const Icon(Icons.add),
-                          color: accent,
-                        ),
-                        decoration: BoxDecoration(
-                            color: primaryDarkest,
-                            borderRadius: BorderRadius.circular(100)),
-                      ),
-                    ],
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: _isManualMode
+                        ? Text(
+                            0.0.toString(),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 25),
+                          )
+                        : Row(
+                            children: [
+                              Container(
+                                child: IconButton(
+                                  iconSize: 15,
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 30, maxWidth: 30),
+                                  onPressed: () {
+                                    // setState(() {
+                                    //   _settedBoatAngle -= 1*pi/180;
+                                    // });
+                                    _mqtt.publish('boat/main/setted_speed',
+                                        (_settedBoatSpeed - 1).toString());
+                                  },
+                                  icon: const Icon(Icons.remove),
+                                  color: accent,
+                                ),
+                                decoration: BoxDecoration(
+                                    color: primaryDarkest,
+                                    borderRadius: BorderRadius.circular(100)),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                child: IconButton(
+                                  iconSize: 15,
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 30, maxWidth: 30),
+                                  onPressed: () {
+                                    // setState(() {
+                                    //   _settedBoatAngle -= 1*pi/180;
+                                    // });
+                                    _mqtt.publish('boat/main/setted_speed',
+                                        (_settedBoatSpeed + 1).toString());
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  color: accent,
+                                ),
+                                decoration: BoxDecoration(
+                                    color: primaryDarkest,
+                                    borderRadius: BorderRadius.circular(100)),
+                              ),
+                            ],
+                          ),
                   )
                 ],
               )),

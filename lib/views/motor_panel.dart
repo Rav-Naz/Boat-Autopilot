@@ -74,6 +74,16 @@ class _MotorPanelViewState extends State<MotorPanelView> {
         actualRightEngingeLoad = double.parse(event);
       });
     });
+    _mqtt.subscribe("boat/main/l_motor_setted_load")!.listen((event) {
+      setState(() {
+        settedLeftEngingeLoad = double.parse(event);
+      });
+    });
+    _mqtt.subscribe("boat/main/r_motor_setted_load")!.listen((event) {
+      setState(() {
+        settedRightEngingeLoad = double.parse(event);
+      });
+    });
     _mqtt.subscribe("boat/main/r_motor_voltage")!.listen((event) {
       setState(() {
         rightMotorVoltage = double.parse(event);
@@ -112,6 +122,11 @@ class _MotorPanelViewState extends State<MotorPanelView> {
         settedTwoEngineLoad.toInt().toString());
   }
 
+  int map(x, in_min, in_max, out_min, out_max) {
+    return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+        .floor();
+  }
+
   @override
   Widget build(BuildContext context) {
     var joystick1 = JoyStick(
@@ -122,25 +137,37 @@ class _MotorPanelViewState extends State<MotorPanelView> {
           var right = 0;
           // Lewa gora
           if (x <= 0 && y >= 0) {
-            left = y + x ~/ 4;
-            right = y - x ~/ 4;
+            var throttle = map(y, 0, 100, 0, 75);
+            var turn = map(x, -100, 0, -25, 0);
+            left = throttle + turn;
+            right = throttle - turn;
           }
           // Prawa gora
           else if (x >= 0 && y >= 0) {
-            left = y - x ~/ 4;
-            right = y + x ~/ 4;
+            var throttle = map(y, 0, 100, 0, 75);
+            var turn = map(x, 0, 100, 0, 25);
+            left = throttle + turn;
+            right = throttle - turn;
           }
           // Lewy dol
           else if (x <= 0 && y <= 0) {
-            left = y + x ~/ 4;
-            right = y - x ~/ 4;
+            var throttle = map(y, -100, 0, -50, 0);
+            var turn = map(x, -100, 0, -25, 0);
+            left = throttle - turn;
+            right = throttle + turn;
           }
           // Prawa dol
           else if (x >= 0 && y <= 0) {
-            left = y - x ~/ 4;
-            right = y + x ~/ 4;
+            var throttle = map(y, -100, 0, -50, 0);
+            var turn = map(x, 0, 100, 0, 25);
+            left = throttle - turn;
+            right = throttle + turn;
           }
           print('left: ${left}, right: ${right}');
+          _mqtt.publish(
+              "boat/main/l_motor_setted_load", left.toDouble().toString());
+          _mqtt.publish(
+              "boat/main/r_motor_setted_load", right.toDouble().toString());
         });
     return ConstrainedBox(
         constraints: const BoxConstraints(
@@ -236,9 +263,9 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                     settingKey: "sterowanie",
                     name1: "AUTO",
                     name2: "MAN",
-                    enabled:
-                        mapProvider.getNavigationMarkerPointsList.isNotEmpty ||
-                            !manualMode,
+                    enabled: true,
+                    // mapProvider.getNavigationMarkerPointsList.isNotEmpty ||
+                    // !manualMode,
                     initialValue: manualMode,
                     callback: (value, setting) {
                       setState(() {
@@ -253,246 +280,125 @@ class _MotorPanelViewState extends State<MotorPanelView> {
                   // opacity: 1,
                   opacity: engineStarted ? 1 : 0.4,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: manualMode
-                        ? [
-                            AbsorbPointer(
-                              absorbing: !engineStarted,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                child: joystick1,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 80,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.rotationY(pi),
-                                          child: SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child: SvgPicture.asset(
-                                                "assets/svg/fan.svg",
-                                                color: primary,
-                                              )),
-                                        ),
-                                        AutoSizeText(
-                                          AppLocalizations.of(context)!
-                                              .engine_load_l,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: primary,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 3),
-                                        AutoSizeText(
-                                            (settedLeftEngingeLoad)
-                                                    .toInt()
-                                                    .toString() +
-                                                "%",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 80,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        AutoSizeText(
-                                          AppLocalizations.of(context)!
-                                              .actual_speed,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: primary,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 3),
-                                        AutoSizeText(
-                                            acutalSpeedInKmPerHour
-                                                    .toInt()
-                                                    .toString() +
-                                                " km/h",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 80,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: SvgPicture.asset(
-                                              "assets/svg/fan.svg",
-                                              color: primary,
-                                            )),
-                                        AutoSizeText(
-                                          AppLocalizations.of(context)!
-                                              .engine_load_r,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: primary,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 3),
-                                        AutoSizeText(
-                                            (settedRightEngingeLoad)
-                                                    .toInt()
-                                                    .toString() +
-                                                "%",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ]
-                        : [
-                            SizedBox(
-                              width: 70,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  AutoSizeText(
-                                    AppLocalizations.of(context)!.engine_load,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                        color: primary,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  AutoSizeText(
-                                      (settedTwoEngineLoad).toInt().toString() +
-                                          "%",
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 12)),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Row(
-                                    children: [
-                                      Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.rotationY(pi),
-                                          child: SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child: SvgPicture.asset(
-                                                "assets/svg/fan.svg",
-                                                color: primary,
-                                              ))),
-                                      SizedBox(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AbsorbPointer(
+                          absorbing: !engineStarted,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: joystick1,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 80,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(pi),
+                                      child: SizedBox(
                                           width: 20,
                                           height: 20,
                                           child: SvgPicture.asset(
                                             "assets/svg/fan.svg",
                                             color: primary,
                                           )),
-                                    ],
-                                  ),
-                                ),
-                                RotatedBox(
-                                  quarterTurns: -1,
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.height *
-                                        0.33,
-                                    child: Slider(
-                                      min: -50.0,
-                                      max: 100.0,
-                                      value: settedTwoEngineLoad,
-                                      onChanged: engineStarted
-                                          ? (value) {
-                                              setState(() {
-                                                settedTwoEngineLoad = value;
-                                                _mqtt.publish(
-                                                    "boat/main/both_motor_setted_load",
-                                                    settedTwoEngineLoad
-                                                        .toInt()
-                                                        .toString());
-                                              });
-                                            }
-                                          : null,
-                                      activeColor: accent,
-                                      inactiveColor: primaryDark,
                                     ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              width: 70,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  AutoSizeText(
-                                    AppLocalizations.of(context)!.actual_speed,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                        color: primary,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  AutoSizeText(
-                                      acutalSpeedInKmPerHour
-                                              .toInt()
-                                              .toString() +
-                                          " km/h",
+                                    AutoSizeText(
+                                      AppLocalizations.of(context)!
+                                          .engine_load_l,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                          color: Colors.white, fontSize: 12)),
-                                ],
+                                          color: primary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    AutoSizeText(
+                                        (settedLeftEngingeLoad)
+                                                .toInt()
+                                                .toString() +
+                                            "%",
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 12)),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                  ),
+                              SizedBox(
+                                width: 80,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    AutoSizeText(
+                                      AppLocalizations.of(context)!
+                                          .actual_speed,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          color: primary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    AutoSizeText(
+                                        acutalSpeedInKmPerHour
+                                                .toInt()
+                                                .toString() +
+                                            " km/h",
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 12)),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 80,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: SvgPicture.asset(
+                                          "assets/svg/fan.svg",
+                                          color: primary,
+                                        )),
+                                    AutoSizeText(
+                                      AppLocalizations.of(context)!
+                                          .engine_load_r,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          color: primary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    AutoSizeText(
+                                        (settedRightEngingeLoad)
+                                                .toInt()
+                                                .toString() +
+                                            "%",
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 12)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
                 )
               ],
             ),
