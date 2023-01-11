@@ -133,41 +133,41 @@ class _MotorPanelViewState extends State<MotorPanelView> {
         radius: 100,
         stickRadius: 20,
         callback: (x, y) {
-          var left = 0;
-          var right = 0;
+          var l_motor = 0;
+          var r_motor = 0;
           // Lewa gora
           if (x <= 0 && y >= 0) {
             var throttle = map(y, 0, 100, 0, 75);
             var turn = map(x, -100, 0, -25, 0);
-            left = throttle + turn;
-            right = throttle - turn;
+            l_motor = throttle + turn;
+            r_motor = throttle - turn;
           }
           // Prawa gora
           else if (x >= 0 && y >= 0) {
             var throttle = map(y, 0, 100, 0, 75);
             var turn = map(x, 0, 100, 0, 25);
-            left = throttle + turn;
-            right = throttle - turn;
+            l_motor = throttle + turn;
+            r_motor = throttle - turn;
           }
           // Lewy dol
           else if (x <= 0 && y <= 0) {
             var throttle = map(y, -100, 0, -50, 0);
             var turn = map(x, -100, 0, -25, 0);
-            left = throttle - turn;
-            right = throttle + turn;
+            l_motor = throttle - turn;
+            r_motor = throttle + turn;
           }
           // Prawa dol
           else if (x >= 0 && y <= 0) {
             var throttle = map(y, -100, 0, -50, 0);
             var turn = map(x, 0, 100, 0, 25);
-            left = throttle - turn;
-            right = throttle + turn;
+            l_motor = throttle - turn;
+            r_motor = throttle + turn;
           }
-          print('left: ${left}, right: ${right}');
+          print('l_motor: ${l_motor}, r_motor: ${r_motor}');
           _mqtt.publish(
-              "boat/main/l_motor_setted_load", left.toDouble().toString());
+              "boat/main/l_motor_setted_load", l_motor.toDouble().toString());
           _mqtt.publish(
-              "boat/main/r_motor_setted_load", right.toDouble().toString());
+              "boat/main/r_motor_setted_load", r_motor.toDouble().toString());
         });
     return ConstrainedBox(
         constraints: const BoxConstraints(
